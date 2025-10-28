@@ -189,16 +189,15 @@ export default function ViewAllTransactions() {
 
   return (
     <main className="min-h-screen bg-background p-4 sm:p-8">
-      <div className="flex gap-2 mb-4">
-        <Switch
-          checked={theme === "dark"}
-          onCheckedChange={() => handleToggle(theme === "dark")}
-          id="dark-mode-toggle"
-        />{" "}
-        <Label htmlFor="dark-mode-toggle">Toggle dark mode</Label>
-      </div>
-
       <div className="mx-auto max-w-7xl">
+        <div className="flex gap-2 mb-4 justfiy-end">
+          <Switch
+            checked={theme === "dark"}
+            onCheckedChange={() => handleToggle(theme === "dark")}
+            id="dark-mode-toggle"
+          />
+          <Label htmlFor="dark-mode-toggle">Toggle dark mode</Label>
+        </div>
         <div className="mb-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-lg border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between">
@@ -271,7 +270,6 @@ export default function ViewAllTransactions() {
             </div>
           </div>
         </div>
-
         <div className="mb-6 flex flex-wrap items-end gap-4 rounded-lg border bg-card p-4 shadow-sm">
           <div className="flex-2 min-w-[250px]">
             <Label htmlFor="search" className="mb-2 block text-sm font-medium">
@@ -372,7 +370,6 @@ export default function ViewAllTransactions() {
             </Select>
           </div>
         </div>
-
         <CustomDatagrid
           data={sortedTransactions}
           columns={columns}

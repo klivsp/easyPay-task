@@ -12,6 +12,7 @@ const NavigationBar = ({ className }: NavigationBarProps) => {
   const navItems = [
     { name: t("createTransaction"), path: "/" },
     { name: t("allTransactions"), path: "/all-transactions" },
+    { name: t("statistics"), path: "/statistics" },
   ];
   return (
     <div

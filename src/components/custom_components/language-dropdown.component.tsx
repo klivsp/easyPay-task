@@ -14,10 +14,10 @@ const LanguagesDropdown = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
-          <Globe className="h-4 w-4" />
-          <span className="dark:text-white">
+      <DropdownMenuTrigger asChild className="dark:bg-slate-800">
+        <Button variant="default" size="sm" className="gap-2">
+          <Globe className="h-4 w-4 text-black" />
+          <span className="text-black">
             {activeLanguage.toLocaleUpperCase()}
           </span>
         </Button>

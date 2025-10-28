@@ -33,5 +33,9 @@
   "sortByCategory": "Rendit sipas Kategorisë",
   "sortByType": "Rendit sipas Llojit",
   "type": "Lloji",
-  "actions": "Veprimet"
+  "actions": "Veprimet",
+  "statistics": "Statistikat",
+  "incomeVsExpense": "Të ardhurat kundrejt Shpenzimeve",
+  "byCategory": "Sipas Kategorisë",
+  "monthlyTrend": "Trendi Mujor"
 }

@@ -33,5 +33,9 @@
   "sortByCategory": "Sort by Category",
   "sortByType": "Sort by Type",
   "type": "Type",
-  "actions": "Actions"
+  "actions": "Actions",
+  "statistics": "Statistics",
+  "incomeVsExpense": "Income vs Expense",
+  "byCategory": "By Category",
+  "monthlyTrend": "Monthly Trend"
 }

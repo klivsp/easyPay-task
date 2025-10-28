@@ -1,0 +1,47 @@
+import { useEffect, useState } from "react";
+import TransactionCharts from "./transactions-chart.component";
+import { transactionAPI } from "@/api/getTransactions";
+
+function Statistics() {
+  const [summary, setSummary] = useState({
+    totalIncome: 0,
+    totalExpenses: 0,
+    balance: 0,
+  });
+  const allTransactions = transactionAPI.getAll();
+
+  useEffect(() => {
+    const loadTransactions = () => {
+      const income = allTransactions
+        .filter((t) => t.type === "income")
+        .reduce((sum, t) => sum + t.amount, 0);
+      const expenses = allTransactions
+        .filter((t) => t.type === "expense")
+        .reduce((sum, t) => sum + t.amount, 0);
+
+      setSummary({
+        totalIncome: income,
+        totalExpenses: expenses,
+        balance: income - expenses,
+      });
+    };
+
+    loadTransactions();
+
+    const handleStorageChange = () => loadTransactions();
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("transactionAdded", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("transactionAdded", handleStorageChange);
+    };
+  }, []);
+  return (
+    <div>
+      <TransactionCharts summary={summary} transactions={allTransactions} />
+    </div>
+  );
+}
+
+export default Statistics;
