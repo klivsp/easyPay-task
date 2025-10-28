@@ -9,6 +9,17 @@ import ConfirmationDialog from "@/components/custom_components/confirmation-dial
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+
+type DateSort = "none" | "asc" | "desc";
+type AmountSort = "none" | "asc" | "desc";
 
 export default function ViewAllTransactions() {
   const { t } = useTranslation("common");
@@ -17,6 +28,8 @@ export default function ViewAllTransactions() {
   const [selectedTransaction, setSelectedTransaction] = useState<
     Transaction | undefined
   >(undefined);
+  const [dateSort, setDateSort] = useState<DateSort>("desc");
+  const [amountSort, setAmountSort] = useState<AmountSort>("none");
   const navigate = useNavigate();
 
   const [summary, setSummary] = useState({
@@ -67,7 +80,7 @@ export default function ViewAllTransactions() {
     }).format(amount);
   };
 
-  const triggerDeleteEvent = (transaction) => {
+  const triggerDeleteEvent = (transaction: Transaction) => {
     console.log("Delete transaction:", transaction);
     setSelectedTransaction(transaction);
     setShowDeleteDialog(true);
@@ -94,12 +107,52 @@ export default function ViewAllTransactions() {
         triggerDeleteEvent,
         handleEdit,
       }) as ColumnDef<Transaction>[],
-    []
+    [triggerDeleteEvent, handleEdit]
   );
 
-  const sortedTransactions = [...transactions].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  const sortedTransactions = useMemo(() => {
+    return [...transactions].sort((a, b) => {
+      if (dateSort !== "none") {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        const dateComparison = dateA - dateB;
+
+        if (dateComparison !== 0) {
+          return dateSort === "asc" ? dateComparison : -dateComparison;
+        }
+      }
+
+      if (amountSort !== "none") {
+        const amountComparison = a.amount - b.amount;
+
+        if (amountComparison !== 0) {
+          return amountSort === "asc" ? amountComparison : -amountComparison;
+        }
+      }
+
+      if (dateSort === "none" && amountSort === "none") {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      }
+
+      return 0;
+    });
+  }, [transactions, dateSort, amountSort]);
+
+  const handleDateSortChange = (value: DateSort) => {
+    setDateSort(value);
+    if (value !== "none") {
+      setAmountSort("none");
+    }
+  };
+
+  const handleAmountSortChange = (value: AmountSort) => {
+    setAmountSort(value);
+    if (value !== "none") {
+      setDateSort("none");
+    }
+  };
 
   return (
     <main className="min-h-screen bg-background p-4 sm:p-8">
@@ -172,6 +225,46 @@ export default function ViewAllTransactions() {
                 />
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="mb-6 flex flex-wrap items-end gap-4 rounded-lg border bg-card p-4 shadow-sm">
+          <div className="flex-1 min-w-[200px]">
+            <Label
+              htmlFor="date-sort"
+              className="mb-2 block text-sm font-medium"
+            >
+              Sort by Date
+            </Label>
+            <Select value={dateSort} onValueChange={handleDateSortChange}>
+              <SelectTrigger id="date-sort">
+                <SelectValue placeholder="Select date order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No Sort</SelectItem>
+                <SelectItem value="asc">Oldest First</SelectItem>
+                <SelectItem value="desc">Newest First</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex-1 min-w-[200px]">
+            <Label
+              htmlFor="amount-sort"
+              className="mb-2 block text-sm font-medium"
+            >
+              Sort by Amount
+            </Label>
+            <Select value={amountSort} onValueChange={handleAmountSortChange}>
+              <SelectTrigger id="amount-sort">
+                <SelectValue placeholder="Select amount order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No Sort</SelectItem>
+                <SelectItem value="asc">Lowest First</SelectItem>
+                <SelectItem value="desc">Highest First</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
