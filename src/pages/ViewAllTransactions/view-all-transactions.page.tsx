@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { ArrowUpCircle, ArrowDownCircle, Wallet } from "lucide-react";
 import type { Transaction } from "../CreateTransaction/transactions-form.component";
 import { transactionAPI } from "@/api/getTransactions";
@@ -17,9 +17,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 type DateSort = "none" | "asc" | "desc";
 type AmountSort = "none" | "asc" | "desc";
+type TypeFilter = "all" | "income" | "expense";
+type CategoryFilter = "all" | string;
 
 export default function ViewAllTransactions() {
   const { t } = useTranslation("common");
@@ -30,6 +33,10 @@ export default function ViewAllTransactions() {
   >(undefined);
   const [dateSort, setDateSort] = useState<DateSort>("desc");
   const [amountSort, setAmountSort] = useState<AmountSort>("none");
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [categories, setCategories] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   const [summary, setSummary] = useState({
@@ -46,7 +53,6 @@ export default function ViewAllTransactions() {
       const income = allTransactions
         .filter((t) => t.type === "income")
         .reduce((sum, t) => sum + t.amount, 0);
-
       const expenses = allTransactions
         .filter((t) => t.type === "expense")
         .reduce((sum, t) => sum + t.amount, 0);
@@ -56,35 +62,35 @@ export default function ViewAllTransactions() {
         totalExpenses: expenses,
         balance: income - expenses,
       });
+
+      const allCategories = Array.from(
+        new Set(allTransactions.map((t) => t.category))
+      );
+      setCategories(allCategories);
     };
 
     loadTransactions();
 
-    const handleStorageChange = () => {
-      loadTransactions();
-    };
+    const handleStorageChange = () => loadTransactions();
 
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("transactionAdded", handleStorageChange);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("transactionAdded", handleStorageChange);
     };
   }, []);
 
-  const formatCurrency = (amount: number, currency: string) => {
-    return new Intl.NumberFormat("en-US", {
+  const formatCurrency = (amount: number, currency: string) =>
+    new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: currency,
     }).format(amount);
-  };
 
-  const triggerDeleteEvent = (transaction: Transaction) => {
-    console.log("Delete transaction:", transaction);
+  const triggerDeleteEvent = useCallback((transaction: Transaction) => {
     setSelectedTransaction(transaction);
     setShowDeleteDialog(true);
-  };
+  }, []);
 
   const handleDelete = () => {
     const transactions = transactionAPI.getAll();
@@ -97,9 +103,12 @@ export default function ViewAllTransactions() {
     toast.success(t("transactionDeletedSuccess"));
   };
 
-  const handleEdit = (transaction: Transaction) => {
-    navigate(`/`, { state: { transaction } });
-  };
+  const handleEdit = useCallback(
+    (transaction: Transaction) => {
+      navigate(`/`, { state: { transaction } });
+    },
+    [navigate]
+  );
 
   const columns = useMemo<ColumnDef<Transaction>[]>(
     () =>
@@ -110,24 +119,32 @@ export default function ViewAllTransactions() {
     [triggerDeleteEvent, handleEdit]
   );
 
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((t) => {
+      const matchesType = typeFilter === "all" ? true : t.type === typeFilter;
+      const matchesCategory =
+        categoryFilter === "all" ? true : t.category === categoryFilter;
+      const matchesSearch = t.description
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      return matchesType && matchesCategory && matchesSearch;
+    });
+  }, [transactions, typeFilter, categoryFilter, searchTerm]);
+
   const sortedTransactions = useMemo(() => {
-    return [...transactions].sort((a, b) => {
+    return [...filteredTransactions].sort((a, b) => {
       if (dateSort !== "none") {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
         const dateComparison = dateA - dateB;
-
-        if (dateComparison !== 0) {
+        if (dateComparison !== 0)
           return dateSort === "asc" ? dateComparison : -dateComparison;
-        }
       }
 
       if (amountSort !== "none") {
         const amountComparison = a.amount - b.amount;
-
-        if (amountComparison !== 0) {
+        if (amountComparison !== 0)
           return amountSort === "asc" ? amountComparison : -amountComparison;
-        }
       }
 
       if (dateSort === "none" && amountSort === "none") {
@@ -138,20 +155,16 @@ export default function ViewAllTransactions() {
 
       return 0;
     });
-  }, [transactions, dateSort, amountSort]);
+  }, [filteredTransactions, dateSort, amountSort]);
 
   const handleDateSortChange = (value: DateSort) => {
     setDateSort(value);
-    if (value !== "none") {
-      setAmountSort("none");
-    }
+    if (value !== "none") setAmountSort("none");
   };
 
   const handleAmountSortChange = (value: AmountSort) => {
     setAmountSort(value);
-    if (value !== "none") {
-      setDateSort("none");
-    }
+    if (value !== "none") setDateSort("none");
   };
 
   return (
@@ -229,6 +242,18 @@ export default function ViewAllTransactions() {
         </div>
 
         <div className="mb-6 flex flex-wrap items-end gap-4 rounded-lg border bg-card p-4 shadow-sm">
+          <div className="flex-2 min-w-[250px]">
+            <Label htmlFor="search" className="mb-2 block text-sm font-medium">
+              Search by Description
+            </Label>
+            <Input
+              id="search"
+              type="text"
+              placeholder="Search transactions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           <div className="flex-1 min-w-[200px]">
             <Label
               htmlFor="date-sort"
@@ -266,6 +291,55 @@ export default function ViewAllTransactions() {
               </SelectContent>
             </Select>
           </div>
+
+          <div className="flex-1 min-w-[200px]">
+            <Label
+              htmlFor="type-filter"
+              className="mb-2 block text-sm font-medium"
+            >
+              Filter by Type
+            </Label>
+            <Select
+              value={typeFilter}
+              onValueChange={(value) => setTypeFilter(value as TypeFilter)}
+            >
+              <SelectTrigger id="type-filter">
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="income">Income</SelectItem>
+                <SelectItem value="expense">Expense</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex-1 min-w-[200px]">
+            <Label
+              htmlFor="category-filter"
+              className="mb-2 block text-sm font-medium"
+            >
+              Filter by Category
+            </Label>
+            <Select
+              value={categoryFilter}
+              onValueChange={(value) =>
+                setCategoryFilter(value as CategoryFilter)
+              }
+            >
+              <SelectTrigger id="category-filter">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                {categories.map((cat) => (
+                  <SelectItem key={cat} value={cat}>
+                    {cat}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <CustomDatagrid
@@ -278,6 +352,7 @@ export default function ViewAllTransactions() {
           getRowKey={(transaction) => transaction.id}
         />
       </div>
+
       <ConfirmationDialog
         description={t("deleteTransactionDesc")}
         title={t("deleteTransaction")}
