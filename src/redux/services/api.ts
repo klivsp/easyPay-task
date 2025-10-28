@@ -20,7 +20,7 @@ export const currencyApi = createApi({
   endpoints: (builder) => ({
     getCurrencies: builder.query<Currency[], void>({
       query: () =>
-        "latest?access_key=1e289d3ee1a76272c8216229d64440db&format=1",
+        `latest?access_key=${import.meta.env.VITE_CURRENCY_API_KEY}&format=1`,
       transformResponse: (response: FixerResponse): Currency[] => {
         return Object.keys(response.rates)
           .map((code) => ({
