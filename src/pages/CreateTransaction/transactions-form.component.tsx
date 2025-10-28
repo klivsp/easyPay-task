@@ -150,30 +150,44 @@ export function TransactionForm() {
     }
   };
 
-  function onSubmit(data: TransactionFormValues) {
-    transactionAPI.add({
+  const onSubmit = (data: TransactionFormValues) => {
+    const payload = {
       description: data.description,
       amount: Number(data.amount),
       type: data.type,
       category: data.category,
       currency: data.currency,
-    });
+    };
 
     if (selectedTransaction) {
+      transactionAPI.update(selectedTransaction.id, payload);
       toast.success("Transaction updated successfully!");
-      return;
+    } else {
+      transactionAPI.add(payload);
+      toast.success("Transaction added successfully!");
     }
 
-    toast.success("Transaction added successfully!");
-
     form.reset();
-  }
+  };
 
   useEffect(() => {
     if (selectedTransaction) {
+      if (!availableCategories.includes(selectedTransaction.category)) {
+        setCustomCategories((prev) => ({
+          ...prev,
+          [selectedTransaction.type]: [
+            ...prev[selectedTransaction.type],
+            selectedTransaction.category,
+          ],
+        }));
+      }
+
       form.reset({
-        ...selectedTransaction,
+        description: selectedTransaction.description,
         amount: String(selectedTransaction.amount),
+        type: selectedTransaction.type,
+        category: selectedTransaction.category,
+        currency: selectedTransaction.currency,
       });
     }
   }, [selectedTransaction]);
