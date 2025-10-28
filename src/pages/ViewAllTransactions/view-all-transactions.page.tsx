@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useCurrencyConverter } from "@/hooks/useCurrencyConverter";
 
 type DateSort = "none" | "asc" | "desc";
 type AmountSort = "none" | "asc" | "desc";
@@ -38,6 +39,7 @@ export default function ViewAllTransactions() {
   const [categories, setCategories] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const { convertToEuro, isLoading } = useCurrencyConverter();
 
   const [summary, setSummary] = useState({
     totalIncome: 0,
@@ -81,45 +83,6 @@ export default function ViewAllTransactions() {
     };
   }, []);
 
-  const formatCurrency = (amount: number, currency: string) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(amount);
-
-  const triggerDeleteEvent = useCallback((transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setShowDeleteDialog(true);
-  }, []);
-
-  const handleDelete = () => {
-    const transactions = transactionAPI.getAll();
-    const filtered = transactions.filter(
-      (t) => t.id !== selectedTransaction?.id
-    );
-    localStorage.setItem("transactions", JSON.stringify(filtered));
-    window.dispatchEvent(new Event("transactionAdded"));
-    setShowDeleteDialog(false);
-    toast.success(t("transactionDeletedSuccess"));
-  };
-
-  const handleEdit = useCallback(
-    (transaction: Transaction) => {
-      navigate(`/`, { state: { transaction } });
-    },
-    [navigate]
-  );
-
-  const columns = useMemo<ColumnDef<Transaction>[]>(
-    () =>
-      getTransactionsListTableColumns({
-        triggerDeleteEvent,
-        handleEdit,
-        t,
-      }) as ColumnDef<Transaction>[],
-    [triggerDeleteEvent, handleEdit]
-  );
-
   const filteredTransactions = useMemo(() => {
     return transactions.filter((t) => {
       const matchesType = typeFilter === "all" ? true : t.type === typeFilter;
@@ -157,6 +120,53 @@ export default function ViewAllTransactions() {
       return 0;
     });
   }, [filteredTransactions, dateSort, amountSort]);
+
+  const formatCurrency = (amount: number, currency: string) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+    }).format(amount);
+
+  const triggerDeleteEvent = useCallback((transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setShowDeleteDialog(true);
+  }, []);
+
+  const handleDelete = () => {
+    const transactions = transactionAPI.getAll();
+    const filtered = transactions.filter(
+      (t) => t.id !== selectedTransaction?.id
+    );
+    localStorage.setItem("transactions", JSON.stringify(filtered));
+    window.dispatchEvent(new Event("transactionAdded"));
+    setShowDeleteDialog(false);
+    toast.success(t("transactionDeletedSuccess"));
+  };
+
+  const handleEdit = useCallback(
+    (transaction: Transaction) => {
+      navigate(`/`, { state: { transaction } });
+    },
+    [navigate]
+  );
+
+  const columns = useMemo<ColumnDef<Transaction>[]>(
+    () =>
+      getTransactionsListTableColumns({
+        triggerDeleteEvent,
+        handleEdit,
+        convertToEuro,
+        isLoading,
+        t,
+      }) as ColumnDef<Transaction>[],
+    [
+      triggerDeleteEvent,
+      handleEdit,
+      isLoading,
+      filteredTransactions,
+      sortedTransactions,
+    ]
+  );
 
   const handleDateSortChange = (value: DateSort) => {
     setDateSort(value);

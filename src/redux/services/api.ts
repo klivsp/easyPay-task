@@ -5,7 +5,7 @@ interface FixerResponse {
   timestamp: number;
   base: string;
   date: string;
-  rates: Record<string, number>[];
+  rates: Record<string, number>;
 }
 
 export interface Currency {
@@ -29,7 +29,13 @@ export const currencyApi = createApi({
           .sort((a, b) => a.code.localeCompare(b.code));
       },
     }),
+
+    getLiveRates: builder.query<Record<string, number>, void>({
+      query: () =>
+        "latest?access_key=1e289d3ee1a76272c8216229d64440db&format=1",
+      transformResponse: (response: FixerResponse) => response.rates,
+    }),
   }),
 });
 
-export const { useGetCurrenciesQuery } = currencyApi;
+export const { useGetCurrenciesQuery, useGetLiveRatesQuery } = currencyApi;

@@ -4,6 +4,8 @@ import type { Column } from "@/components/custom_components/custom-data-grid.com
 export const getTransactionsListTableColumns = ({
   triggerDeleteEvent,
   handleEdit,
+  convertToEuro,
+  isLoading,
   t,
 }): unknown => {
   const formatDate = (dateString: string) => {
@@ -74,6 +76,30 @@ export const getTransactionsListTableColumns = ({
           {formatCurrency(transaction.amount, transaction.currency)}
         </span>
       ),
+      className: "text-right",
+    },
+    {
+      key: "amountEuro",
+      header: t("amount") + "EUR",
+      headerClassName: "text-right",
+      render: (transaction) => {
+        if (isLoading) return <span>...</span>;
+        const euroValue = convertToEuro(
+          transaction.amount,
+          transaction.currency
+        );
+
+        return (
+          <span
+            className={`font-semibold ${
+              transaction.type === "income" ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {transaction.type === "income" ? "+" : "-"}
+            {formatCurrency(euroValue, "EUR")}
+          </span>
+        );
+      },
       className: "text-right",
     },
     {
