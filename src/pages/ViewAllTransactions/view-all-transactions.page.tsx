@@ -115,6 +115,7 @@ export default function ViewAllTransactions() {
       getTransactionsListTableColumns({
         triggerDeleteEvent,
         handleEdit,
+        t,
       }) as ColumnDef<Transaction>[],
     [triggerDeleteEvent, handleEdit]
   );

@@ -31,5 +31,7 @@
   "sortByDate": "Sort by Date",
   "sortByAmount": "Sort by Amount",
   "sortByCategory": "Sort by Category",
-  "sortByType": "Sort by Type"
+  "sortByType": "Sort by Type",
+  "type": "Type",
+  "actions": "Actions"
 }

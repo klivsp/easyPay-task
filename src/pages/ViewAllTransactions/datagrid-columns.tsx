@@ -4,6 +4,7 @@ import type { Column } from "@/components/custom_components/custom-data-grid.com
 export const getTransactionsListTableColumns = ({
   triggerDeleteEvent,
   handleEdit,
+  t,
 }): unknown => {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -25,19 +26,19 @@ export const getTransactionsListTableColumns = ({
   const columns: Column<Transaction>[] = [
     {
       key: "createdAt",
-      header: "Date",
+      header: t("date"),
       render: (transaction) => formatDate(transaction.createdAt),
       className: "text-muted-foreground",
     },
     {
       key: "description",
-      header: "Description",
+      header: t("description"),
       render: (transaction) => transaction.description,
       className: "font-medium",
     },
     {
       key: "category",
-      header: "Category",
+      header: t("category"),
       render: (transaction) => (
         <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium">
           {transaction.category}
@@ -46,7 +47,7 @@ export const getTransactionsListTableColumns = ({
     },
     {
       key: "type",
-      header: "Type",
+      header: t("type"),
       render: (transaction) => (
         <span
           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
@@ -61,7 +62,7 @@ export const getTransactionsListTableColumns = ({
     },
     {
       key: "amount",
-      header: "Amount",
+      header: t("amount"),
       headerClassName: "text-right",
       render: (transaction) => (
         <span
@@ -77,7 +78,7 @@ export const getTransactionsListTableColumns = ({
     },
     {
       key: "actions",
-      header: "Actions",
+      header: t("actions"),
       headerClassName: "text-right",
       render: (transaction) => (
         <div className="flex justify-end gap-2">

@@ -31,5 +31,7 @@
   "sortByDate": "Rendit sipas Datës",
   "sortByAmount": "Rendit sipas Shumës",
   "sortByCategory": "Rendit sipas Kategorisë",
-  "sortByType": "Rendit sipas Llojit"
+  "sortByType": "Rendit sipas Llojit",
+  "type": "Lloji",
+  "actions": "Veprimet"
 }
