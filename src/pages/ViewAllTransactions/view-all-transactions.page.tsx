@@ -19,6 +19,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useCurrencyConverter } from "@/hooks/useCurrencyConverter";
+import { useTheme } from "@/components/ui/theme-provider";
+import { Switch } from "@/components/ui/switch";
 
 type DateSort = "none" | "asc" | "desc";
 type AmountSort = "none" | "asc" | "desc";
@@ -38,6 +40,13 @@ export default function ViewAllTransactions() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [categories, setCategories] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { theme, setTheme } = useTheme();
+
+  const handleToggle = (checked: boolean) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    checked ? setTheme("light") : setTheme("dark");
+  };
   const navigate = useNavigate();
   const { convertToEuro, isLoading } = useCurrencyConverter();
 
@@ -180,6 +189,15 @@ export default function ViewAllTransactions() {
 
   return (
     <main className="min-h-screen bg-background p-4 sm:p-8">
+      <div className="flex gap-2 mb-4">
+        <Switch
+          checked={theme === "dark"}
+          onCheckedChange={() => handleToggle(theme === "dark")}
+          id="dark-mode-toggle"
+        />{" "}
+        <Label htmlFor="dark-mode-toggle">Toggle dark mode</Label>
+      </div>
+
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-lg border bg-card p-6 shadow-sm">

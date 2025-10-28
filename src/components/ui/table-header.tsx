@@ -11,7 +11,7 @@ const CustomTableHeader = <T,>({ table, className }: TableHeaderProps<T>) => {
         className
       )}
     >
-      {table.getHeaderGroups().map((headerGroup) => (
+      {table?.getHeaderGroups().map((headerGroup) => (
         <TableRow key={headerGroup.id} className="dark:hover:bg-transparent">
           {headerGroup.headers.map((header) => {
             return (
