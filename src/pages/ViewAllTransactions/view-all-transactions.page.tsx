@@ -175,13 +175,14 @@ export default function ViewAllTransactions() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Total Income
+                  {t("totalIncome")}
                 </p>
                 <p className="mt-2 text-3xl font-bold text-green-600">
                   {formatCurrency(summary.totalIncome, "USD")}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {transactionAPI.getByType("income").length} transactions
+                  {transactionAPI.getByType("income").length}{" "}
+                  {t("transactions")}
                 </p>
               </div>
               <div className="rounded-full bg-green-100 p-3">
@@ -194,13 +195,14 @@ export default function ViewAllTransactions() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Total Expenses
+                  {t("totalExpenses")}
                 </p>
                 <p className="mt-2 text-3xl font-bold text-red-600">
                   {formatCurrency(summary.totalExpenses, "USD")}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {transactionAPI.getByType("expense").length} transactions
+                  {transactionAPI.getByType("expense").length}{" "}
+                  {t("transactions")}
                 </p>
               </div>
               <div className="rounded-full bg-red-100 p-3">
@@ -213,7 +215,7 @@ export default function ViewAllTransactions() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Current Balance
+                  {t("currentBalance")}
                 </p>
                 <p
                   className={`mt-2 text-3xl font-bold ${
@@ -223,7 +225,7 @@ export default function ViewAllTransactions() {
                   {formatCurrency(summary.balance, "USD")}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {transactions.length} total transactions
+                  {transactions.length} {t("transactions")}
                 </p>
               </div>
               <div
@@ -244,7 +246,7 @@ export default function ViewAllTransactions() {
         <div className="mb-6 flex flex-wrap items-end gap-4 rounded-lg border bg-card p-4 shadow-sm">
           <div className="flex-2 min-w-[250px]">
             <Label htmlFor="search" className="mb-2 block text-sm font-medium">
-              Search by Description
+              {t("searchByDescription")}
             </Label>
             <Input
               id="search"
@@ -259,7 +261,7 @@ export default function ViewAllTransactions() {
               htmlFor="date-sort"
               className="mb-2 block text-sm font-medium"
             >
-              Sort by Date
+              {t("sortByDate")}
             </Label>
             <Select value={dateSort} onValueChange={handleDateSortChange}>
               <SelectTrigger id="date-sort">
@@ -278,7 +280,7 @@ export default function ViewAllTransactions() {
               htmlFor="amount-sort"
               className="mb-2 block text-sm font-medium"
             >
-              Sort by Amount
+              {t("sortByAmount")}
             </Label>
             <Select value={amountSort} onValueChange={handleAmountSortChange}>
               <SelectTrigger id="amount-sort">
@@ -297,7 +299,7 @@ export default function ViewAllTransactions() {
               htmlFor="type-filter"
               className="mb-2 block text-sm font-medium"
             >
-              Filter by Type
+              {t("sortByType")}
             </Label>
             <Select
               value={typeFilter}
@@ -319,7 +321,7 @@ export default function ViewAllTransactions() {
               htmlFor="category-filter"
               className="mb-2 block text-sm font-medium"
             >
-              Filter by Category
+              {t("sortByCategory")}
             </Label>
             <Select
               value={categoryFilter}

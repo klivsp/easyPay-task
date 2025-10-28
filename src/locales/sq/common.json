@@ -14,7 +14,7 @@
   "cancel": "Anulo",
   "currency": "Monedha",
   "totalIncome": "Të ardhura totale",
-  "totalExpense": "Shpenzime totale",
+  "totalExpenses": "Shpenzime totale",
   "balance": "Bilanci",
   "noTransactions": "Nuk ka transaksione të disponueshme.",
   "language": "Gjuha",
@@ -24,5 +24,12 @@
   "addTransaction": "Shto Transaksion",
   "selectOrCreateCategory": "Zgjidhni një kategori ekzistuese ose krijoni një të re",
   "deleteTransactionDesc": "A jeni i sigurt që dëshironi të fshini këtë transaksion? Kjo veprim nuk mund të zhbëhet.",
-  "transactionDeletedSuccess": "Transaksioni është fshirë me sukses."
+  "transactionDeletedSuccess": "Transaksioni është fshirë me sukses.",
+  "transactions": "transaksione",
+  "currentBalance": "Bilanci Aktual",
+  "searchByDescription": "Kërko sipas përshkrimit...",
+  "sortByDate": "Rendit sipas Datës",
+  "sortByAmount": "Rendit sipas Shumës",
+  "sortByCategory": "Rendit sipas Kategorisë",
+  "sortByType": "Rendit sipas Llojit"
 }

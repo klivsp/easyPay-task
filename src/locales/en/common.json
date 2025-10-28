@@ -15,7 +15,7 @@
   "currency": "Currency",
   "cancel": "Cancel",
   "totalIncome": "Total Income",
-  "totalExpense": "Total Expense",
+  "totalExpenses": "Total Expense",
   "balance": "Balance",
   "noTransactions": "No transactions available.",
   "language": "Language",
@@ -24,5 +24,12 @@
   "addCategory": "Add Category",
   "selectOrCreateCategory": "Select an existing category or create a new one",
   "deleteTransactionDesc": "Are you sure you want to delete this transaction? This action cannot be undone.",
-  "transactionDeletedSucces": "Transaction has been deleted successfully."
+  "transactionDeletedSucces": "Transaction has been deleted successfully.",
+  "transactions": "transactions",
+  "currentBalance": "Current Balance",
+  "searchByDescription": "Search by description...",
+  "sortByDate": "Sort by Date",
+  "sortByAmount": "Sort by Amount",
+  "sortByCategory": "Sort by Category",
+  "sortByType": "Sort by Type"
 }
