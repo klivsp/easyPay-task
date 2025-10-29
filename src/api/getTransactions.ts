@@ -6,14 +6,12 @@ const STORAGE_KEYS = {
 };
 
 export const transactionAPI = {
-  // Get all transactions
   getAll: (): Transaction[] => {
     if (typeof window === "undefined") return [];
     const data = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
     return data ? JSON.parse(data) : [];
   },
 
-  // Add a new transaction
   add: (transaction: Omit<Transaction, "id" | "createdAt">): Transaction => {
     const newTransaction: Transaction = {
       ...transaction,
@@ -29,7 +27,6 @@ export const transactionAPI = {
     return newTransaction;
   },
 
-  // Delete a transaction
   delete: (id: string): void => {
     const transactions = transactionAPI.getAll().filter((t) => t.id !== id);
     localStorage.setItem(
@@ -38,7 +35,6 @@ export const transactionAPI = {
     );
   },
 
-  // Update a transaction
   update: (
     id: string,
     updates: Partial<Omit<Transaction, "id" | "createdAt">>
@@ -55,12 +51,10 @@ export const transactionAPI = {
     return transactions[index];
   },
 
-  // Get transactions by type
   getByType: (type: "income" | "expense"): Transaction[] => {
     return transactionAPI.getAll().filter((t) => t.type === type);
   },
 
-  // Get transactions by category
   getByCategory: (category: string): Transaction[] => {
     return transactionAPI.getAll().filter((t) => t.category === category);
   },
