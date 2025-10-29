@@ -35,7 +35,7 @@ import { toast } from "react-toastify";
 import { transactionAPI } from "@/api/getTransactions";
 import { useTranslation } from "react-i18next";
 import { useGetCurrenciesQuery } from "@/redux/services/api";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 const transactionFormSchema = z.object({
   description: z
@@ -93,6 +93,7 @@ export function TransactionForm() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { t } = useTranslation("common");
   const { state } = useLocation();
+  const navigate = useNavigate();
   const selectedTransaction = state?.transaction;
 
   const { data: currencies, isLoading } = useGetCurrenciesQuery();
@@ -162,6 +163,7 @@ export function TransactionForm() {
     if (selectedTransaction) {
       transactionAPI.update(selectedTransaction.id, payload);
       toast.success("Transaction updated successfully!");
+      navigate("/all-transactions");
     } else {
       transactionAPI.add(payload);
       toast.success("Transaction added successfully!");

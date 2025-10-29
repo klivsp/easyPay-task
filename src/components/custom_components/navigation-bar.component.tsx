@@ -17,7 +17,7 @@ const NavigationBar = ({ className }: NavigationBarProps) => {
   return (
     <div
       className={cn(
-        "w-full h-16 bg-gray-800 text-white flex items-center px-4 justify-between",
+        "w-full h-16 bg-gray-800 text-white flex items-center px-4 justify-between dark:bg-black dark:border-b-2 dark:border-amber-50",
         className
       )}
     >
