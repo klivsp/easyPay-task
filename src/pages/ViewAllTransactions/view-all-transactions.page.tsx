@@ -343,9 +343,9 @@ export default function ViewAllTransactions() {
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="income">Income</SelectItem>
-                <SelectItem value="expense">Expense</SelectItem>
+                <SelectItem value="all">{t("all")}</SelectItem>
+                <SelectItem value="income">{t("income")}</SelectItem>
+                <SelectItem value="expense">{t("expense")}</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -37,5 +37,6 @@
   "statistics": "Statistics",
   "incomeVsExpense": "Income vs Expense",
   "byCategory": "By Category",
-  "monthlyTrend": "Monthly Trend"
+  "monthlyTrend": "Monthly Trend",
+  "all": "All"
 }
