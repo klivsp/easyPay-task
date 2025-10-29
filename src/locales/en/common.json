@@ -38,5 +38,6 @@
   "incomeVsExpense": "Income vs Expense",
   "byCategory": "By Category",
   "monthlyTrend": "Monthly Trend",
-  "all": "All"
+  "all": "All",
+  "updateTransaction": "Update Transaction"
 }

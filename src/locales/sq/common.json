@@ -38,5 +38,6 @@
   "incomeVsExpense": "Të ardhurat kundrejt Shpenzimeve",
   "byCategory": "Sipas Kategorisë",
   "monthlyTrend": "Trendi Mujor",
-  "all": "Të gjitha"
+  "all": "Të gjitha",
+  "updateTransaction": "Përditëso Transaksionin"
 }
