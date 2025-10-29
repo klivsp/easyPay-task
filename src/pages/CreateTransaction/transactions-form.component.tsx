@@ -371,7 +371,7 @@ export function TransactionForm() {
           )}
         />
 
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full " variant={"default"}>
           {t("addTransaction")}
         </Button>
       </form>

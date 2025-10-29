@@ -45,7 +45,6 @@ function CustomDatagrid<T>({
   data,
   columns,
   actions,
-  title = "All Items",
   emptyMessage = "No items yet. Start by adding your first item!",
   defaultItemsPerPage = 10,
   itemsPerPageOptions = [5, 10, 20],
@@ -83,13 +82,6 @@ function CustomDatagrid<T>({
 
   return (
     <div className="rounded-lg border bg-card shadow-sm">
-      <div className="border-b p-6">
-        <h2 className="text-xl font-semibold text-foreground">{title}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {data.length} {data.length === 1 ? "item" : "items"} recorded
-        </p>
-      </div>
-
       {data.length === 0 ? (
         <div className="p-12 text-center">
           <p className="text-muted-foreground">{emptyMessage}</p>

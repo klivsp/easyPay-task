@@ -56,32 +56,31 @@ export default function ViewAllTransactions() {
     balance: 0,
   });
 
+  const loadTransactions = () => {
+    const allTransactions = transactionAPI.getAll();
+    setTransactions(allTransactions);
+
+    const income = allTransactions
+      .filter((t) => t.type === "income")
+      .reduce((sum, t) => sum + t.amount, 0);
+    const expenses = allTransactions
+      .filter((t) => t.type === "expense")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    setSummary({
+      totalIncome: income,
+      totalExpenses: expenses,
+      balance: income - expenses,
+    });
+
+    const allCategories = Array.from(
+      new Set(allTransactions.map((t) => t.category))
+    );
+    setCategories(allCategories);
+  };
+
   useEffect(() => {
-    const loadTransactions = () => {
-      const allTransactions = transactionAPI.getAll();
-      setTransactions(allTransactions);
-
-      const income = allTransactions
-        .filter((t) => t.type === "income")
-        .reduce((sum, t) => sum + t.amount, 0);
-      const expenses = allTransactions
-        .filter((t) => t.type === "expense")
-        .reduce((sum, t) => sum + t.amount, 0);
-
-      setSummary({
-        totalIncome: income,
-        totalExpenses: expenses,
-        balance: income - expenses,
-      });
-
-      const allCategories = Array.from(
-        new Set(allTransactions.map((t) => t.category))
-      );
-      setCategories(allCategories);
-    };
-
     loadTransactions();
-
     const handleStorageChange = () => loadTransactions();
 
     window.addEventListener("storage", handleStorageChange);

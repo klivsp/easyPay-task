@@ -16,8 +16,8 @@ const LanguagesDropdown = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="dark:bg-slate-800">
         <Button variant="default" size="sm" className="gap-2">
-          <Globe className="h-4 w-4 text-black" />
-          <span className="text-black">
+          <Globe className="h-4 w-4 text-white" />
+          <span className="text-white">
             {activeLanguage.toLocaleUpperCase()}
           </span>
         </Button>
