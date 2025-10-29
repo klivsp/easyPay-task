@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { useCurrencyConverter } from "@/hooks/useCurrencyConverter";
 import { useTheme } from "@/components/ui/theme-provider";
 import { Switch } from "@/components/ui/switch";
+import { SummaryCard } from "@/components/custom_components/summary-card.component";
 
 type DateSort = "none" | "asc" | "desc";
 type AmountSort = "none" | "asc" | "desc";
@@ -195,6 +196,63 @@ export default function ViewAllTransactions() {
     if (value !== "none") setDateSort("none");
   };
 
+  const summaryCards = [
+    {
+      label: t("totalIncome"),
+      valueElement: (
+        <p className="mt-2 text-3xl font-bold text-green-600">
+          {formatCurrency(summary.totalIncome, "EUR")}
+        </p>
+      ),
+      transactionCount: transactionAPI.getByType("income").length,
+      icon: (
+        <div className="rounded-full bg-green-100 p-3">
+          <ArrowUpCircle className="size-6 text-green-600" />
+        </div>
+      ),
+    },
+    {
+      label: t("totalExpenses"),
+      valueElement: (
+        <p className="mt-2 text-3xl font-bold text-red-600">
+          {formatCurrency(summary.totalExpenses, "EUR")}
+        </p>
+      ),
+      transactionCount: transactionAPI.getByType("expense").length,
+      icon: (
+        <div className="rounded-full bg-red-100 p-3">
+          <ArrowDownCircle className="size-6 text-red-600" />
+        </div>
+      ),
+    },
+    {
+      label: t("currentBalance"),
+      valueElement: (
+        <p
+          className={`mt-2 text-3xl font-bold ${
+            summary.balance >= 0 ? "text-blue-600" : "text-red-600"
+          }`}
+        >
+          {formatCurrency(summary.balance, "EUR")}
+        </p>
+      ),
+      transactionCount: transactions.length,
+      icon: (
+        <div
+          className={`rounded-full p-3 ${
+            summary.balance >= 0 ? "bg-blue-100" : "bg-red-100"
+          }`}
+        >
+          <Wallet
+            className={`size-6 ${
+              summary.balance >= 0 ? "text-blue-600" : "text-red-600"
+            }`}
+          />
+        </div>
+      ),
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-background p-4 sm:p-8">
       <div className="mx-auto max-w-7xl">
@@ -207,88 +265,17 @@ export default function ViewAllTransactions() {
           <Label htmlFor="dark-mode-toggle">Toggle dark mode</Label>
         </div>
         <div className="mb-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-lg border bg-card p-6 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("totalIncome")}
-                </p>
-                {isLoading ? (
-                  <span>...</span>
-                ) : (
-                  <p className="mt-2 text-3xl font-bold text-green-600">
-                    {formatCurrency(summary.totalIncome, "EUR")}
-                  </p>
-                )}
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {transactionAPI.getByType("income").length}{" "}
-                  {t("transactions")}
-                </p>
-              </div>
-              <div className="rounded-full bg-green-100 p-3">
-                <ArrowUpCircle className="size-6 text-green-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-lg border bg-card p-6 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("totalExpenses")}
-                </p>
-                {isLoading ? (
-                  <span>...</span>
-                ) : (
-                  <p className="mt-2 text-3xl font-bold text-red-600">
-                    {formatCurrency(summary.totalExpenses, "EUR")}
-                  </p>
-                )}
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {transactionAPI.getByType("expense").length}{" "}
-                  {t("transactions")}
-                </p>
-              </div>
-              <div className="rounded-full bg-red-100 p-3">
-                <ArrowDownCircle className="size-6 text-red-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-lg border bg-card p-6 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("currentBalance")}
-                </p>
-                {isLoading ? (
-                  <span>...</span>
-                ) : (
-                  <p
-                    className={`mt-2 text-3xl font-bold ${
-                      summary.balance >= 0 ? "text-blue-600" : "text-red-600"
-                    }`}
-                  >
-                    {formatCurrency(summary.balance, "EUR")}
-                  </p>
-                )}
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {transactions.length} {t("transactions")}
-                </p>
-              </div>
-              <div
-                className={`rounded-full p-3 ${
-                  summary.balance >= 0 ? "bg-blue-100" : "bg-red-100"
-                }`}
-              >
-                <Wallet
-                  className={`size-6 ${
-                    summary.balance >= 0 ? "text-blue-600" : "text-red-600"
-                  }`}
-                />
-              </div>
-            </div>
-          </div>
+          {summaryCards.map((card, index) => (
+            <SummaryCard
+              key={index}
+              label={card.label}
+              valueElement={card.valueElement}
+              transactionCount={card.transactionCount}
+              transactionLabel={t("transactions")}
+              icon={card.icon}
+              isLoading={isLoading}
+            />
+          ))}
         </div>
         <div className="mb-6 flex flex-wrap items-end gap-4 rounded-lg border bg-card p-4 shadow-sm">
           <div className="flex-2 min-w-[250px]">
