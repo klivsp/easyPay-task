@@ -62,10 +62,17 @@ export default function ViewAllTransactions() {
 
     const income = allTransactions
       .filter((t) => t.type === "income")
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => {
+        const amountInEuro = convertToEuro(t.amount, t.currency);
+        return sum + amountInEuro;
+      }, 0);
     const expenses = allTransactions
       .filter((t) => t.type === "expense")
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => {
+        const amountInEuro = convertToEuro(t.amount, t.currency);
+
+        return sum + amountInEuro;
+      }, 0);
 
     setSummary({
       totalIncome: income,
@@ -80,16 +87,18 @@ export default function ViewAllTransactions() {
   };
 
   useEffect(() => {
-    loadTransactions();
-    const handleStorageChange = () => loadTransactions();
+    if (!isLoading) {
+      loadTransactions();
+    }
 
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("transactionAdded", handleStorageChange);
+    window.addEventListener("storage", loadTransactions);
+    window.addEventListener("transactionAdded", loadTransactions);
+
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("transactionAdded", handleStorageChange);
+      window.removeEventListener("storage", loadTransactions);
+      window.removeEventListener("transactionAdded", loadTransactions);
     };
-  }, []);
+  }, [isLoading]);
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((t) => {
@@ -204,9 +213,13 @@ export default function ViewAllTransactions() {
                 <p className="text-sm font-medium text-muted-foreground">
                   {t("totalIncome")}
                 </p>
-                <p className="mt-2 text-3xl font-bold text-green-600">
-                  {formatCurrency(summary.totalIncome, "USD")}
-                </p>
+                {isLoading ? (
+                  <span>...</span>
+                ) : (
+                  <p className="mt-2 text-3xl font-bold text-green-600">
+                    {formatCurrency(summary.totalIncome, "EUR")}
+                  </p>
+                )}
                 <p className="mt-1 text-xs text-muted-foreground">
                   {transactionAPI.getByType("income").length}{" "}
                   {t("transactions")}
@@ -224,9 +237,13 @@ export default function ViewAllTransactions() {
                 <p className="text-sm font-medium text-muted-foreground">
                   {t("totalExpenses")}
                 </p>
-                <p className="mt-2 text-3xl font-bold text-red-600">
-                  {formatCurrency(summary.totalExpenses, "USD")}
-                </p>
+                {isLoading ? (
+                  <span>...</span>
+                ) : (
+                  <p className="mt-2 text-3xl font-bold text-red-600">
+                    {formatCurrency(summary.totalExpenses, "EUR")}
+                  </p>
+                )}
                 <p className="mt-1 text-xs text-muted-foreground">
                   {transactionAPI.getByType("expense").length}{" "}
                   {t("transactions")}
@@ -244,13 +261,17 @@ export default function ViewAllTransactions() {
                 <p className="text-sm font-medium text-muted-foreground">
                   {t("currentBalance")}
                 </p>
-                <p
-                  className={`mt-2 text-3xl font-bold ${
-                    summary.balance >= 0 ? "text-blue-600" : "text-red-600"
-                  }`}
-                >
-                  {formatCurrency(summary.balance, "USD")}
-                </p>
+                {isLoading ? (
+                  <span>...</span>
+                ) : (
+                  <p
+                    className={`mt-2 text-3xl font-bold ${
+                      summary.balance >= 0 ? "text-blue-600" : "text-red-600"
+                    }`}
+                  >
+                    {formatCurrency(summary.balance, "EUR")}
+                  </p>
+                )}
                 <p className="mt-1 text-xs text-muted-foreground">
                   {transactions.length} {t("transactions")}
                 </p>
