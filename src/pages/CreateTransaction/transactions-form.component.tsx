@@ -99,23 +99,19 @@ export function TransactionForm() {
   const { data: currencies, isLoading } = useGetCurrenciesQuery();
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedCategories = localStorage.getItem(
-        STORAGE_KEYS.CUSTOM_CATEGORIES
-      );
-      if (savedCategories) {
-        setCustomCategories(JSON.parse(savedCategories));
-      }
+    const savedCategories = localStorage.getItem(
+      STORAGE_KEYS.CUSTOM_CATEGORIES
+    );
+    if (savedCategories) {
+      setCustomCategories(JSON.parse(savedCategories));
     }
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(
-        STORAGE_KEYS.CUSTOM_CATEGORIES,
-        JSON.stringify(customCategories)
-      );
-    }
+    localStorage.setItem(
+      STORAGE_KEYS.CUSTOM_CATEGORIES,
+      JSON.stringify(customCategories)
+    );
   }, [customCategories]);
 
   const form = useForm<TransactionFormValues>({
