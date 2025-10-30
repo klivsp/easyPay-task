@@ -9,32 +9,29 @@ function Statistics() {
     balance: 0,
   });
   const allTransactions = transactionAPI.getAll();
+  const loadTransactions = () => {
+    const income = allTransactions
+      .filter((t) => t.type === "income")
+      .reduce((sum, t) => sum + t.amount, 0);
+    const expenses = allTransactions
+      .filter((t) => t.type === "expense")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    setSummary({
+      totalIncome: income,
+      totalExpenses: expenses,
+      balance: income - expenses,
+    });
+  };
 
   useEffect(() => {
-    const loadTransactions = () => {
-      const income = allTransactions
-        .filter((t) => t.type === "income")
-        .reduce((sum, t) => sum + t.amount, 0);
-      const expenses = allTransactions
-        .filter((t) => t.type === "expense")
-        .reduce((sum, t) => sum + t.amount, 0);
-
-      setSummary({
-        totalIncome: income,
-        totalExpenses: expenses,
-        balance: income - expenses,
-      });
-    };
-
     loadTransactions();
 
-    const handleStorageChange = () => loadTransactions();
-
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("transactionAdded", handleStorageChange);
+    window.addEventListener("storage", () => loadTransactions());
+    window.addEventListener("transactionAdded", () => loadTransactions());
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("transactionAdded", handleStorageChange);
+      window.removeEventListener("storage", () => loadTransactions());
+      window.removeEventListener("transactionAdded", () => loadTransactions());
     };
   }, []);
   return (
